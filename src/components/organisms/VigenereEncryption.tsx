@@ -12,6 +12,8 @@ import { EncryptButton } from '../atoms/EncryptButton';
 import { DecryptButton } from '../atoms/DecryptButton';
 import { SwitchMenu } from '../molecules/SwitchMenu';
 import { KeyInputCard } from '../molecules/KeyInputCard';
+import { ValiditiyCheck } from '../../utils/ValidityCheck';
+
 
 interface Props {
 
@@ -55,26 +57,38 @@ export const VigenereEncryption: React.FC<Props> = () => {
 
     const [encryptedText, setEncryptedText] = React.useState("");
     const [encryptedChars, setEncryptedChars] = React.useState(0);
-    
+
     const encrypt = () => {
 
         let startString = inputText.toUpperCase();
         let encryptionKey = key.toUpperCase();
         let endString = "";
 
-        for (let i = 0, f = 0; i < startString.length; i++) {
-            let positionLetter = startString[i].charCodeAt(0);
-            let conv = (((positionLetter - 65) + (encryptionKey[f % encryptionKey.length].charCodeAt(0) - 65)) % 26) + 65;
-            if (positionLetter == 32) {
-                endString += " ";
-            } else {
-                endString += String.fromCharCode(conv);
-                f++;
+        if (ValiditiyCheck(startString) === false || ValiditiyCheck(encryptionKey) === false) {
+
+        } else {
+            for (let i = 0, f = 0; i < startString.length; i++) {
+                let positionLetter = startString[i].charCodeAt(0);
+                let conv = (((positionLetter - 65) + (encryptionKey[f % encryptionKey.length].charCodeAt(0) - 65)) % 26) + 65;
+                if (positionLetter == 32) {
+                    endString += " ";
+                } else {
+                    endString += String.fromCharCode(conv);
+                    f++;
+                }
             }
+
+
         }
-        
+
         setEncryptedChars(endString.length);
         setEncryptedText(endString.toLocaleLowerCase());
+
+
+        if (ValiditiyCheck(startString) === false || endString === "") {
+            setEncryptedText("Invalid input, your input can only be letters")
+
+        }
     }
 
 
@@ -85,7 +99,7 @@ export const VigenereEncryption: React.FC<Props> = () => {
     return (
         <Container>
             <Animate index={1} >
-                <AppHeader LogoValue="Vigenere"/>
+                <AppHeader LogoValue="Vigenere" />
             </Animate>
             <Animate index={2} >
                 <SwitchMenu path1="/vigenere" path2="/vigenereDecryption" button1Color="#14A596" button2Color="#2E2E2E" />
@@ -93,20 +107,20 @@ export const VigenereEncryption: React.FC<Props> = () => {
             <BodyContainer>
                 <DataContainer>
                     <Animate index={3} >
-                        <TextInputCard maxLength={22} placeholder="Text to encrypt"  inputText={setInputText} />
+                        <TextInputCard maxLength={22} placeholder="Text to encrypt" inputText={setInputText} />
                     </Animate>
                     <Animate index={4} >
-                        <KeyInputCard maxLength={1000} placeholder="Key"  inputText={setKey} />
+                        <KeyInputCard maxLength={1000} placeholder="Key" inputText={setKey} />
                     </Animate>
                 </DataContainer>
                 <DataContainer>
-                        <Animate index={5} >
-                            <DataCard cardData={encryptedText} header="Encrypted text"/>
-                        </Animate>
-                        <Animate index={6} >
-                            <DataCard cardData={encryptedChars} header="Encrypted Chars"/>  
-                        </Animate>
-                </DataContainer>  
+                    <Animate index={5} >
+                        <DataCard cardData={encryptedText} header="Encrypted text" />
+                    </Animate>
+                    <Animate index={6} >
+                        <DataCard cardData={encryptedChars} header="Encrypted Chars" />
+                    </Animate>
+                </DataContainer>
             </BodyContainer>
             <Animate index={7}>
                 <ButtonContainer onClick={startEncryption} >

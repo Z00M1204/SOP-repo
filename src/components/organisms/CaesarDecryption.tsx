@@ -10,6 +10,7 @@ import { TextInputCard } from '../molecules/TextInputCard';
 import { AmountCard } from '../molecules/AmountCard';
 import { DecryptButton } from '../atoms/DecryptButton';
 import { SwitchMenu } from '../molecules/SwitchMenu';
+import { ValiditiyCheck } from '../../utils/ValidityCheck';
 
 interface Props {
 
@@ -66,27 +67,30 @@ export const CaesarDecryption: React.FC<Props> = () => {
 
         for (let i = 0; i < startString.length; i++) {
             let asciiNumber = startString[i].charCodeAt(0);
-            console.log(asciiNumber)
 
 
             if (asciiNumber === 32) {
                 endString += " ";
-            } 
+            }
 
             else if (asciiNumber - e < 65) {
                 asciiNumber = 90 - (65 - (asciiNumber - e) - 1);
                 endString += String.fromCharCode(asciiNumber);
-            } 
-            
+            }
+
             else if (asciiNumber >= 65 && asciiNumber <= 90) {
                 endString += String.fromCharCode(asciiNumber - e);
             }
-            
 
-            
+
+
         }
         setDecryptedChars(endString.length);
         setDecryptedText(endString.toLowerCase());
+
+        if (ValiditiyCheck(startString) === false) {
+            setDecryptedText("Invalid input, your input can only be letters")
+        }
     }
 
     const startEncryption = () => {

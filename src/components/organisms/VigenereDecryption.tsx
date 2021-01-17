@@ -11,6 +11,7 @@ import { EncryptButton } from '../atoms/EncryptButton';
 import { SwitchMenu } from '../molecules/SwitchMenu';
 import { DecryptButton } from '../atoms/DecryptButton';
 import { KeyInputCard } from '../molecules/KeyInputCard';
+import { ValiditiyCheck } from '../../utils/ValidityCheck';
 
 interface Props {
 
@@ -57,24 +58,32 @@ export const VigenereDecryption: React.FC<Props> = () => {
 
     const decrypt = () => {
 
+
         let startString = inputText.toUpperCase();
         let encryptionKey = key.toUpperCase();
         let endString = "";
 
-        for(let i = 0, f = 0; i < startString.length; i++) {
-            let positionLetter = startString[i].charCodeAt(0);
-            let conv = (((positionLetter + 65) - (encryptionKey[f%encryptionKey.length].charCodeAt(0) - 65)) % 26) + 65;
-            if (positionLetter == 32) {
-                endString += " ";
-            } else {
-                endString += String.fromCharCode(conv);
-                f++;
-            } 
-        }   
-        
+        if (ValiditiyCheck(startString) === false || ValiditiyCheck(encryptionKey) === false) {
+
+        } else {
+            for (let i = 0, f = 0; i < startString.length; i++) {
+                let positionLetter = startString[i].charCodeAt(0);
+                let conv = (((positionLetter + 65) - (encryptionKey[f % encryptionKey.length].charCodeAt(0) - 65)) % 26) + 65;
+                if (positionLetter == 32) {
+                    endString += " ";
+                } else {
+                    endString += String.fromCharCode(conv);
+                    f++;
+                }
+            }
+        }
+
         setDecryptedChars(endString.length);
         setDecryptedText(endString.toLocaleLowerCase());
 
+        if (ValiditiyCheck(startString) === false || endString === "") {
+            setDecryptedText("Invalid input, your input can only be letters")
+        }
     }
 
     const startDecryption = () => {
@@ -84,7 +93,7 @@ export const VigenereDecryption: React.FC<Props> = () => {
     return (
         <Container>
             <Animate index={1} >
-                <AppHeader LogoValue="Vigenere"/>
+                <AppHeader LogoValue="Vigenere" />
             </Animate>
             <Animate index={2} >
                 <SwitchMenu path1="/vigenere" path2="/vigenereDecryption" button1Color="#2E2E2E" button2Color="#294AF1" />
@@ -95,17 +104,17 @@ export const VigenereDecryption: React.FC<Props> = () => {
                         <TextInputCard maxLength={22} placeholder="Text to encrypt" inputText={setInputText} />
                     </Animate>
                     <Animate index={4} >
-                        <KeyInputCard maxLength={1000} placeholder="Key"  inputText={setKey} />
+                        <KeyInputCard maxLength={1000} placeholder="Key" inputText={setKey} />
                     </Animate>
                 </DataContainer>
                 <DataContainer>
-                        <Animate index={5} >
-                            <DataCard cardData={decryptedText} header="Decrypted text"/>
-                        </Animate>
-                        <Animate index={6} >
-                            <DataCard cardData={decryptedChars} header="Decrypted Chars"/>  
-                        </Animate>
-                </DataContainer>  
+                    <Animate index={5} >
+                        <DataCard cardData={decryptedText} header="Decrypted text" />
+                    </Animate>
+                    <Animate index={6} >
+                        <DataCard cardData={decryptedChars} header="Decrypted Chars" />
+                    </Animate>
+                </DataContainer>
             </BodyContainer>
             <Animate index={7}>
                 <ButtonContainer onClick={startDecryption} >

@@ -11,6 +11,11 @@ import { AmountCard } from '../molecules/AmountCard';
 import { EncryptButton } from '../atoms/EncryptButton';
 import { SwitchMenu } from '../molecules/SwitchMenu';
 import { VerticalFlexContainer } from '../atoms/VerticalFlexContainer';
+import { ValiditiyCheck } from '../../utils/ValidityCheck';
+
+
+
+
 
 interface Props {
 
@@ -79,6 +84,12 @@ export const CaesarEncryption: React.FC<Props> = () => {
         }
         setEncryptedChars(endString.length);
         setEncryptedText(endString.toLocaleLowerCase());
+
+        if (ValiditiyCheck(endString) === false) {
+            setEncryptedText("Invalid input, your input can only be letters")
+
+        }
+
     }
 
     const startEncryption = () => {
